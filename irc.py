@@ -107,6 +107,7 @@ class Bot(asynchat.async_chat):
                   select.select([], [sslsock], [])
                else:
                   raise
+         sslsock.setblocking(1)
          self.set_socket(sslsock)
       if self.verbose: 
          print >> sys.stderr, 'connected!'
