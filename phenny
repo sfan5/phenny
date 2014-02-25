@@ -48,10 +48,20 @@ def create_default_config(fn):
    #password = 'example'
    # Server password
    #serverpass = 'serverpass'
-   # Owner of the bot
-   owner = 'yournick'
-   # Admins of the bot
-   admins = ['someoneyoutrust']
+   # Owner of the bot (hostmask)
+   owner = r'nickname!ident@host'
+   # you can also allow multiple owners:
+   #owner = [r'nickname!ident@host1', r'nickname!ident@host2']
+   # Admins of the bot (hostmasks)
+   admins = [r'trustedperson1!ident@host', r'trustedperson2!ident@host']
+
+   # Wildcards you can use in hostmasks:
+   #  *     1 or more characters
+   #  ?     1 character
+   #  \a    1 or more alpha chars
+   #  \n    1 or more numeric chars
+   #  \o    1 or more alphanumeric chars
+   #  \h    1 or more hexadecimal chars
 
    # Modules to disable
    exclude = []

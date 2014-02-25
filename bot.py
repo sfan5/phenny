@@ -12,6 +12,31 @@ import irc
 
 home = os.getcwd()
 
+def match_hostmask(matchstr, hostmask):
+	ptrn = matchstr
+	ptrn = ptrn.replace('\\', r'\\')
+	ptrn = ptrn.replace(r'.', r'\.')
+	ptrn = ptrn.replace(r'+', r'\+')
+	ptrn = ptrn.replace(r'(', r'\(')
+	ptrn = ptrn.replace(r')', r'\)')
+	ptrn = ptrn.replace(r'^', r'\^')
+	ptrn = ptrn.replace(r'$', r'\$')
+	ptrn = ptrn.replace(r'|', r'\|')
+
+	ptrn = ptrn.replace(r'*', r'.+')
+	ptrn = ptrn.replace(r'?', r'.')
+	ptrn = ptrn.replace(r'\a', r'[A-Za-z]+')
+	ptrn = ptrn.replace(r'\n', r'[0-9]+')
+	ptrn = ptrn.replace(r'\o', r'[0-9A-Za-z]+')
+	ptrn = ptrn.replace(r'\h', r'[0-9A-Fa-f]+')
+
+	rgx = re.compile('^' + ptrn + '$')
+	m = rgx.match(hostmask)
+	if m:
+		return True
+	else:
+		return False
+
 def decode(bytes): 
    try: text = bytes.decode('utf-8')
    except UnicodeDecodeError: 
@@ -178,8 +203,19 @@ class Phenny(irc.Bot):
             s.group = match.group
             s.groups = match.groups
             s.args = args
-            s.admin = origin.nick in self.config.admins
-            s.owner = origin.nick == self.config.owner
+            s.admin = False
+            for hmask in self.config.admins:
+            	if match_hostmask(pattern, origin.hostmask):
+            		s.admin = True
+            s.owner = False
+            owners = self.config.owner
+            if type(owners) != type([]):
+            	owners = [owners]
+            for hmask in owners:
+            	if match_hostmask(pattern, origin.hostmask):
+            		s.owner = True
+            if s.owner and !s.admin:
+            	s.admin = True
             return s
 
       return CommandInput(text, origin, bytes, match, event, args)

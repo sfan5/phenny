@@ -16,6 +16,7 @@ class Origin(object):
    def __init__(self, bot, source, args): 
       match = Origin.source.match(source or '')
       self.nick, self.user, self.host = match.groups()
+      self.hostmask = source or ''
 
       if len(args) > 1: 
          target = args[1]
