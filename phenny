@@ -26,7 +26,7 @@ def check_python_version():
 
 def create_default_config(fn): 
    f = open(fn, 'w')
-   print >> f, trim("""\
+   print >> f, trim(r"""\
    # Nickname of the bot
    nick = 'phenny'
    # Channels the bot shall join

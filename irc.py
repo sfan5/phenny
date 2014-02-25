@@ -8,7 +8,7 @@ http://inamidst.com/phenny/
 """
 
 import sys, re, time, traceback
-import socket, asyncore, asynchat, ssl
+import socket, asyncore, asynchat, ssl, select
 
 class Origin(object): 
    source = re.compile(r'([^!]*)!?([^@]*)@?(.*)')
@@ -91,10 +91,23 @@ class Bot(asynchat.async_chat):
    def handle_connect(self): 
       if self.use_ssl:
          self.del_channel()
-         self.set_socket(ssl.wrap_socket(self.socket,
-            suppress_ragged_eofs=False, do_handshake_on_connect=True,
-            ssl_version=ssl.PROTOCOL_TLSv1))
+         sslsock = ssl.wrap_socket(self.socket,
+            suppress_ragged_eofs=False, do_handshake_on_connect=False,
+            ssl_version=ssl.PROTOCOL_TLSv1)
          # FIXME: Certificate validation is not done
+         # Keep attempting handshake until successful
+         while True:
+            try:
+               sslsock.do_handshake()
+               break
+            except ssl.SSLError as error:
+               if error.args[0] == ssl.SSL_ERROR_WANT_READ:
+                  select.select([sslsock], [], [])
+               elif error.args[0] == ssl.SSL_ERROR_WANT_WRITE:
+                  select.select([], [sslsock], [])
+               else:
+                  raise
+         self.set_socket(sslsock)
       if self.verbose: 
          print >> sys.stderr, 'connected!'
       if self.password: 

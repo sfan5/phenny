@@ -205,16 +205,16 @@ class Phenny(irc.Bot):
             s.args = args
             s.admin = False
             for hmask in self.config.admins:
-            	if match_hostmask(pattern, origin.hostmask):
+            	if match_hostmask(hmask, origin.hostmask):
             		s.admin = True
             s.owner = False
             owners = self.config.owner
             if type(owners) != type([]):
             	owners = [owners]
             for hmask in owners:
-            	if match_hostmask(pattern, origin.hostmask):
+            	if match_hostmask(hmask, origin.hostmask):
             		s.owner = True
-            if s.owner and !s.admin:
+            if s.owner and not s.admin:
             	s.admin = True
             return s
 
