@@ -41,6 +41,8 @@ def create_default_config(fn):
    host = 'irc.example.net'
    # port of the irc server
    #port = 6667
+   # use SSL/TLS to encrypt communication with the server?
+   #ssl = False
 
    # NickServ password
    #password = 'example'

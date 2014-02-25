@@ -8,7 +8,7 @@ http://inamidst.com/phenny/
 """
 
 import sys, re, time, traceback
-import socket, asyncore, asynchat
+import socket, asyncore, asynchat, ssl
 
 class Origin(object): 
    source = re.compile(r'([^!]*)!?([^@]*)@?(.*)')
@@ -25,7 +25,7 @@ class Origin(object):
       self.sender = mappings.get(target, target)
 
 class Bot(asynchat.async_chat): 
-   def __init__(self, nick, name, channels, password=None): 
+   def __init__(self, nick, name, channels, password=None, use_ssl=False):
       asynchat.async_chat.__init__(self)
       self.set_terminator('\n')
       self.buffer = ''
@@ -38,6 +38,7 @@ class Bot(asynchat.async_chat):
       self.verbose = True
       self.channels = channels or []
       self.stack = []
+      self.use_ssl = use_ssl
 
       import threading
       self.sending = threading.RLock()
@@ -87,6 +88,12 @@ class Bot(asynchat.async_chat):
          sys.exit()
 
    def handle_connect(self): 
+      if self.use_ssl:
+         self.del_channel()
+         self.set_socket(ssl.wrap_socket(self.socket,
+            suppress_ragged_eofs=False, do_handshake_on_connect=True,
+            ssl_version=ssl.PROTOCOL_TLSv1))
+         # FIXME: Certificate validation is not done
       if self.verbose: 
          print >> sys.stderr, 'connected!'
       if self.password: 
