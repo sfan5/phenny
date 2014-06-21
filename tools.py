@@ -8,10 +8,10 @@ http://inamidst.com/phenny/
 """
 
 def deprecated(old): 
-   def new(phenny, input, old=old): 
+   def new(phenny, input, old=old):
       self = phenny
       origin = type('Origin', (object,), {
-         'sender': input.sender, 
+         'sender': input.sender,
          'nick': input.nick
       })()
       match = input.match
@@ -22,5 +22,5 @@ def deprecated(old):
    new.__name__ = old.__name__
    return new
 
-if __name__ == '__main__': 
+if __name__ == '__main__':
    print __doc__.strip()

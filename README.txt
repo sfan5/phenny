@@ -6,5 +6,5 @@ Installation &c.
 
 Enjoy!
 
--- 
+--
 Sean B. Palmer, http://inamidst.com/sbp/
