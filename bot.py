@@ -205,6 +205,7 @@ class Phenny(irc.Bot):
             s.group = match.group
             s.groups = match.groups
             s.args = args
+            s.hostmask = origin.hostmask
             s.admin = False
             for hmask in self.config.admins:
             	if match_hostmask(hmask, origin.hostmask):
