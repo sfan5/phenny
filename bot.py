@@ -105,6 +105,7 @@ class Phenny(irc.Bot):
 
    def bind_commands(self):
       self.commands = {'high': {}, 'medium': {}, 'low': {}}
+      self.hooks = []
 
       def bind(self, priority, regexp, func):
          print priority, regexp.pattern.encode('utf-8'), func
@@ -125,7 +126,11 @@ class Phenny(irc.Bot):
          return pattern.replace('$nick', r'%s[,:] +' % re.escape(self.nick))
 
       for name, func in self.variables.iteritems():
-         # print name, func
+
+         if hasattr(func, 'hook') and func.hook:
+            self.hooks.append(func)
+            continue
+
          if not hasattr(func, 'priority'):
             func.priority = 'medium'
 
@@ -252,6 +257,11 @@ class Phenny(irc.Bot):
 
                   phenny = self.wrapped(origin, text, match)
                   input = self.input(origin, text, bytes, match, event, args)
+
+                  # Run all hooks and abort processing if one of them returns False
+                  for hook in self.hooks:
+                     if not hook(phenny, input, func):
+                        continue
 
                   if func.thread:
                      targs = (func, origin, phenny, input)
