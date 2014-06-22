@@ -50,6 +50,7 @@ class Phenny(irc.Bot):
       args = (config.nick, config.name, config.channels, config.password, config.ssl)
       irc.Bot.__init__(self, *args)
       self.config = config
+      self.config.prefix = re.escape(self.config.prefix)
       self.doc = {}
       self.stats = {}
       self.setup()
