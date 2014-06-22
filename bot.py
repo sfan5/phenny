@@ -138,6 +138,9 @@ class Phenny(irc.Bot):
          if not hasattr(func, 'thread'):
             func.thread = True
 
+         if not hasattr(func, 'nohook'):
+            func.nohook = False
+
          if not hasattr(func, 'event'):
             func.event = 'PRIVMSG'
          else: func.event = func.event.upper()
@@ -259,10 +262,11 @@ class Phenny(irc.Bot):
                   phenny = self.wrapped(origin, text, match)
                   input = self.input(origin, text, bytes, match, event, args)
 
-                  # Run all hooks and abort processing if one of them returns False
-                  for hook in self.hooks:
-                     if not hook(phenny, input, func):
-                        continue
+                  if not func.nohook:
+                     # Run all hooks and abort processing if one of them returns False
+                     for hook in self.hooks:
+                        if not hook(phenny, input, func):
+                           continue
 
                   if func.thread:
                      targs = (func, origin, phenny, input)
