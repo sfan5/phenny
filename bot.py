@@ -103,6 +103,9 @@ class Phenny(irc.Bot):
       for name, obj in variables.iteritems():
          if hasattr(obj, 'commands') or hasattr(obj, 'rule'):
             self.variables[name] = obj
+         elif name == "_export":
+            for name_ in obj:
+               globals()[name_] = obj[name_]
 
    def bind_commands(self):
       self.commands = {'high': {}, 'medium': {}, 'low': {}}
