@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python2
 """
 phenny - An IRC Bot
 Copyright 2008, Sean B. Palmer, inamidst.com
@@ -26,57 +26,57 @@ def check_python_version():
 
 def create_default_config(fn):
    f = open(fn, 'w')
-   print >> f, trim(r"""\
-   # Nickname of the bot
-   nick = 'phenny'
-   # Channels the bot shall join
-   channels = ['#example', '#test']
-   # Prefix used for commands
-   #prefix = '.'
-   # Realname
-   #name = 'Phenny Palmersbot, http://inamidst.com/phenny/'
+   print >> f, trim(r"""
+# Nickname of the bot
+nick = 'phenny'
+# Channels the bot shall join
+channels = ['#example', '#test']
+# Prefix used for commands
+#prefix = '.'
+# Realname
+#name = 'Phenny Palmersbot, http://inamidst.com/phenny/'
 
-   # domain or IP of the IRC server
-   host = 'irc.example.net'
-   # port of the irc server
-   #port = 6667
-   # use SSL/TLS to encrypt communication with the server?
-   #ssl = False
+# domain or IP of the IRC server
+host = 'irc.example.net'
+# port of the irc server
+#port = 6667
+# use SSL/TLS to encrypt communication with the server?
+#ssl = False
 
-   # NickServ password
-   #password = 'example'
-   # Server password
-   #serverpass = 'serverpass'
-   # Owner of the bot
-   owner = 'nickname!ident@host'
-   # you can also define multiple owners:
-   #owner = ['nickname!ident@host1', 'nickname!ident@host2']
-   # Admins of the bot
-   admins = ['trustedperson1!ident@host', 'trustedperson2!ident@host']
+# NickServ password
+#password = 'example'
+# Server password
+#serverpass = 'serverpass'
+# Owner of the bot
+owner = 'nickname!ident@host'
+# you can also define multiple owners:
+#owner = ['nickname!ident@host1', 'nickname!ident@host2']
+# Admins of the bot
+admins = ['trustedperson1!ident@host', 'trustedperson2!ident@host']
 
-   # Wildcards you can use in hostmasks:
-   #  *     1 or more characters
-   #  ?     1 character
-   #  \a    1 or more letters
-   #  \n    1 or more digits
-   #  \o    1 or more alphanumeric chars
-   #  \h    1 or more hexadecimal chars
+# Wildcards you can use in hostmasks:
+#  *     1 or more characters
+#  ?     1 character
+#  \a    1 or more letters
+#  \n    1 or more digits
+#  \o    1 or more alphanumeric chars
+#  \h    1 or more hexadecimal chars
 
-   # Modules to disable
-   exclude = []
-   # Uncomment this if you want to enable modules rather than disable some
-   #enable = []
-   # Directories to load additional modules from
-   extra = []
+# Modules to disable
+exclude = []
+# Uncomment this if you want to enable modules rather than disable some
+#enable = []
+# Directories to load additional modules from
+extra = []
 
-   # Services to load: maps channel names to white or black lists
-   external = {
-      '#liberal': ['!'], # allow all
-      '#conservative': [], # allow none
-      '*': ['!'] # default whitelist, allow all
-   }
+# Services to load: maps channel names to white or black lists
+external = {
+	'#liberal': ['!'], # allow all
+	'#conservative': [], # allow none
+	'*': ['!'] # default whitelist, allow all
+}
 
-   # EOF""")
+# EOF""")
    f.close()
 
 def create_default_config_file(dotdir):
