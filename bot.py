@@ -105,7 +105,7 @@ class Phenny(irc.Bot):
             self.variables[name] = obj
          elif name == "_export":
             for name_ in obj:
-               globals()[name_] = obj[name_]
+               __builtins__[name_] = obj[name_] # TODO?: Haxx!1!!
 
    def bind_commands(self):
       self.commands = {'high': {}, 'medium': {}, 'low': {}}
