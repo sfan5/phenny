@@ -101,11 +101,11 @@ class Phenny(irc.Bot):
    def register(self, variables):
       # This is used by reload.py, hence it being methodised
       for name, obj in variables.iteritems():
-         if hasattr(obj, 'commands') or hasattr(obj, 'rule'):
+         if hasattr(obj, 'commands') or hasattr(obj, 'rule') or hasattr(obj, 'hook'):
             self.variables[name] = obj
          elif name == "_export":
             for name_ in obj:
-               __builtins__[name_] = obj[name_] # TODO?: Haxx!1!!
+               __builtins__[name_] = obj[name_] # TODO?: Hacky
 
    def bind_commands(self):
       self.commands = {'high': {}, 'medium': {}, 'low': {}}
@@ -267,9 +267,13 @@ class Phenny(irc.Bot):
 
                   if not func.nohook:
                      # Run all hooks and abort processing if one of them returns False
+                     abort = False
                      for hook in self.hooks:
                         if not hook(phenny, input, func):
-                           continue
+                           abort = True
+                           break
+                     if abort:
+                        break
 
                   if func.thread:
                      targs = (func, origin, phenny, input)
