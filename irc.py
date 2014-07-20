@@ -118,7 +118,7 @@ class Bot(asynchat.async_chat):
       print("Connection was closed.", file=sys.stderr)
 
    def collect_incoming_data(self, data):
-      self.buffer += str(data, 'utf-8')
+      self.buffer += str(data, 'utf-8', 'ignore')
 
    def found_terminator(self):
       line = self.buffer
