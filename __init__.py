@@ -37,8 +37,8 @@ def run_phenny(config):
       p.run(config.host, config.port)
 
    try: Watcher()
-   except Exception, e:
-      print >> sys.stderr, 'Warning:', e, '(in __init__.py)'
+   except Exception as e:
+      print('Warning:', e, '(in __init__.py)', file=sys.stderr)
 
    while True:
       try: connect(config)
@@ -48,8 +48,7 @@ def run_phenny(config):
       if not isinstance(delay, int):
          break
 
-      warning = 'Warning: Disconnected. Reconnecting in %s seconds...' % delay
-      print >> sys.stderr, warning
+      print('Warning: Disconnected. Reconnecting in %s seconds...' % delay, file=sys.stderr)
       time.sleep(delay)
 
 def run(config):
@@ -59,4 +58,4 @@ def run(config):
    else: t.start()
 
 if __name__ == '__main__':
-   print __doc__
+   print(__doc__)
