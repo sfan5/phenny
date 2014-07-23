@@ -62,9 +62,9 @@ class Bot(asynchat.async_chat):
    def write(self, args, text=None):
       # This is a safe version of __write
       def safe(input):
+         if not input: return ""
          input = input.replace('\n', '')
-         input = input.replace('\r', '')
-         return input
+         return input.replace('\r', '')
       try:
          args = [safe(arg) for arg in args]
          if text is not None:
@@ -167,6 +167,7 @@ class Bot(asynchat.async_chat):
             return
 
       def safe(input):
+         if not input: return ""
          input = input.replace('\n', '')
          return input.replace('\r', '')
       self.__write(('PRIVMSG', safe(recipient)), safe(text))
