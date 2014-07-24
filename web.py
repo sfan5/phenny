@@ -21,11 +21,11 @@ def get(uri, amount=-1):
 	except urllib.error.HTTPError as e:
 		return b"", e.code
 	if amount > 0:
-		bytes = f.read(amount)
+		content = f.read(amount)
 	else:
-		bytes = f.read()
+		content = f.read()
 	f.close()
-	return bytes, f.status
+	return content, f.status
 
 def head(uri):
 	global user_agent
@@ -41,15 +41,15 @@ def head(uri):
 
 def post(uri, query):
 	global user_agent
-	data = urllib.parse.urlencode(query)
+	data = bytes(urllib.parse.urlencode(query), 'ascii')
 	req = urllib.request.Request(uri, data=data, headers={"User-Agent": user_agent})
 	try:
 		f = urllib.request.urlopen(req, cadefault=True)
 	except urllib.error.HTTPError as e:
 		return b"", e.code
-	bytes = f.read()
+	content = f.read()
 	f.close()
-	return bytes, f.status
+	return content, f.status
 
 def entity(match):
 	value = match.group(1).lower()
