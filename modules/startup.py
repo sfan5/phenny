@@ -20,7 +20,7 @@ def setup(phenny):
       except: pass
 
       def close():
-         print "Nobody PONGed our PING, restarting"
+         print("Nobody PONGed our PING, restarting")
          phenny.handle_close()
       
       def pingloop():
@@ -66,4 +66,4 @@ startup.event = '251'
 startup.priority = 'low'
 
 if __name__ == '__main__': 
-   print __doc__.strip()
+   print(__doc__.strip())
