@@ -42,7 +42,9 @@ class Phenny(irc.Bot):
       args = (config.nick, config.name, config.channels, config.password, config.ssl)
       irc.Bot.__init__(self, *args)
       self.config = config
-      self.config.prefix = re.escape(self.config.prefix)
+      if not hasattr(self.config, "__prefix_escaped"):
+         self.config.prefix = re.escape(self.config.prefix)
+         setattr(self.config, "__prefix_escaped", True)
       self.doc = {}
       self.stats = {}
       self.setup()
