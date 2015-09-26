@@ -150,7 +150,7 @@ def main(argv=None):
       module.filename = config_name
 
       if not hasattr(module, 'prefix'):
-         module.prefix = r'\.'
+         module.prefix = '.'
 
       if not hasattr(module, 'name'):
          module.name = 'Phenny Palmersbot, http://inamidst.com/phenny/'
