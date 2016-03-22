@@ -249,36 +249,32 @@ class Phenny(irc.Bot):
       for priority in ('high', 'medium', 'low'):
          items = self.commands[priority].items()
          for regexp, funcs in items:
+            match = regexp.match(text)
+            if not match: continue
             for func in funcs:
                if event != func.event and func.event != '*': continue
+               if self.limit(origin, func): continue
 
-               match = regexp.match(text)
-               if match:
-                  if self.limit(origin, func): continue
+               phenny = self.wrapped(origin, text, match)
+               input = self.input(origin, text, bytes, match, event, args)
 
-                  phenny = self.wrapped(origin, text, match)
-                  input = self.input(origin, text, bytes, match, event, args)
+               # Run all hooks and abort processing if one of them returns False
+               if not func.nohook and any(not hook(phenny, input, func) for hook in self.hooks):
+                  continue
 
-                  if not func.nohook:
-                     # Run all hooks and abort processing if one of them returns False
-                     abort = False
-                     for hook in self.hooks:
-                        if not hook(phenny, input, func):
-                           abort = True
-                           break
-                     if abort:
-                        break
+               if func.thread:
+                  targs = (func, origin, phenny, input)
+                  t = threading.Thread(target=self.call, args=targs)
+                  t.start()
+               else:
+                  self.call(func, origin, phenny, input)
 
-                  if func.thread:
-                     targs = (func, origin, phenny, input)
-                     t = threading.Thread(target=self.call, args=targs)
-                     t.start()
-                  else: self.call(func, origin, phenny, input)
+               for source in [origin.sender, origin.nick]:
+                  try:
+                     self.stats[(func.name, source)] += 1
+                  except KeyError:
+                     self.stats[(func.name, source)] = 1
 
-                  for source in [origin.sender, origin.nick]:
-                     try: self.stats[(func.name, source)] += 1
-                     except KeyError:
-                        self.stats[(func.name, source)] = 1
 
 if __name__ == '__main__':
    print(__doc__)
