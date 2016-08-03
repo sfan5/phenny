@@ -83,7 +83,7 @@ class Phenny(irc.Bot):
          else:
             if hasattr(module, 'setup'):
                module.setup(self)
-            self.register(vars(module))
+            self.register(vars(module), name)
             modules.append(name)
 
       if modules:
@@ -93,14 +93,16 @@ class Phenny(irc.Bot):
 
       self.bind_commands()
 
-   def register(self, variables):
+   def register(self, variables, module_name):
       # This is used by reload.py, hence it being methodised
       for name, obj in variables.items():
          if hasattr(obj, 'commands') or hasattr(obj, 'rule') or hasattr(obj, 'hook'):
-            self.variables[name] = obj
+            # TODO: ideally this module_name bullshit wouldn't exist at all
+            #       and function collection would be handeled entirely different
+            self.variables["%s__%s" % (module_name, name)] = obj
          elif name == "_export":
             for name_ in obj:
-               __builtins__[name_] = obj[name_] # TODO?: Hacky
+               __builtins__[name_] = obj[name_] # TODO: hacky but works
 
    def bind_commands(self):
       self.commands = {'high': {}, 'medium': {}, 'low': {}}
@@ -124,7 +126,7 @@ class Phenny(irc.Bot):
          pattern = pattern.replace('$nickname', re.escape(self.nick))
          return pattern.replace('$nick', r'%s[,:] +' % re.escape(self.nick))
 
-      for name, func in self.variables.items():
+      for func in self.variables.values():
 
          if hasattr(func, 'hook') and func.hook:
             self.hooks.append(func)
@@ -274,7 +276,6 @@ class Phenny(irc.Bot):
                      self.stats[(func.name, source)] += 1
                   except KeyError:
                      self.stats[(func.name, source)] = 1
-
 
 if __name__ == '__main__':
    print(__doc__)
