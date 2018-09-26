@@ -103,6 +103,8 @@ class Phenny(irc.Bot):
          elif name == "_export":
             for name_ in obj:
                __builtins__[name_] = obj[name_] # TODO: hacky but works
+         elif name == "_startup":
+            obj(self)
 
    def bind_commands(self):
       self.commands = {'high': {}, 'medium': {}, 'low': {}}
