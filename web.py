@@ -12,12 +12,13 @@ import json as jsonlib
 from html.entities import html5 as name2codepoint
 
 user_agent = "Mozilla/5.0 (compatible; Phenny; +https://github.com/sfan5/phenny)"
+request_timeout = 10.0
 
 def get(uri, amount=-1):
 	global user_agent
 	req = urllib.request.Request(uri, headers={"User-Agent": user_agent})
 	try:
-		f = urllib.request.urlopen(req, cadefault=True)
+		f = urllib.request.urlopen(req, timeout=request_timeout, cadefault=True)
 	except urllib.error.HTTPError as e:
 		return b"", e.code
 	if amount > 0:
@@ -31,7 +32,7 @@ def head(uri):
 	global user_agent
 	req = urllib.request.Request(uri, headers={"User-Agent": user_agent}, method="HEAD")
 	try:
-		f = urllib.request.urlopen(req, cadefault=True)
+		f = urllib.request.urlopen(req, timeout=request_timeout, cadefault=True)
 	except urllib.error.HTTPError as e:
 		return {}, e.code
 	headers = dict(f.info().items())
@@ -44,7 +45,7 @@ def post(uri, query):
 	data = bytes(urllib.parse.urlencode(query), 'ascii')
 	req = urllib.request.Request(uri, data=data, headers={"User-Agent": user_agent})
 	try:
-		f = urllib.request.urlopen(req, cadefault=True)
+		f = urllib.request.urlopen(req, timeout=request_timeout, cadefault=True)
 	except urllib.error.HTTPError as e:
 		return b"", e.code
 	content = f.read()
@@ -52,8 +53,8 @@ def post(uri, query):
 	return content, f.status
 
 def entity(match):
-	value = match.group(1).lower()
-	if value.startswith('#x'):
+	value = match.group(1)
+	if value.lower().startswith('#x'):
 		return chr(int(value[2:], 16))
 	elif value.startswith('#'):
 		return chr(int(value[1:]))
